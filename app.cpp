@@ -14,13 +14,14 @@ public:
             this->food_item_codes[i] = food_item_codes[i];
             this->food_item_prices[i] = food_item_prices[i];
             this->food_item_names[i] = food_item_names[i];
+            this->total_tax = 0;
         } 
         
     }
 
     void show_item(){
-         cout<<"                                "<<"Make bill"<<endl;
-         cout<<"                           "<<"___________________"<<endl<<endl;
+         cout<<"                            "<<"Make bill"<<endl;
+         cout<<"                       "<<"___________________"<<endl<<endl;
          cout<<"Item code:"<<"      "<<"Item name:"<<"                      "<<"Item Price:"<<endl;
          for(int i=0;i<12;i++){
             cout<<food_item_codes[i]<<"             "<<left<<setw(25)<<food_item_names[i]<<"       "<<food_item_prices[i]<<endl;
@@ -36,6 +37,13 @@ public:
                 }
             }
         }
+    }
+
+    int check_item(int code){
+        for(int i=0;i<12;i++){
+            if(code == this->food_item_codes[i]) return 1;
+        }
+        return 0;
     }
 
 };
@@ -59,6 +67,21 @@ Restaurant* takeInput(){
     return myRes;
 }
 
+void takeInput(int item_count, int item_code[], int quantity[], Restaurant* myRes){
+     for(int i=0;i<item_count;i++){
+        cout<<endl<<"Ente item "<<i+1<<" code: ";
+        cin>>item_code[i];
+        int chk_error = myRes->check_item(item_code[i]);
+        if(!chk_error){
+            cout<<endl<<"item not found, please enter a valid code: ";
+            takeInput(item_count, item_code, quantity, myRes);
+            break;
+        }
+        cout<<endl<<"Ente item "<<i+1<<" quantity: ";
+        cin>>quantity[i];
+    }
+}
+
 
 int main(){
     Restaurant *myRes = takeInput();
@@ -74,12 +97,7 @@ int main(){
 
     int item_code[item_count], quantity[item_count];
     
-    for(int i=0;i<item_count;i++){
-        cout<<endl<<"Ente item "<<i<<" code: ";
-        cin>>item_code[i];
-        cout<<endl<<"Ente item "<<i<<" quantity: ";
-        cin>>quantity[i];
-    }
+    takeInput(item_count, item_code, quantity, myRes);
 
     int foodIitem[item_count] = {-1};
     myRes->food_item(item_count,item_code,foodIitem);
@@ -89,10 +107,29 @@ int main(){
     // }
 
     //Bill summary
-    cout<<"                                "<<"Bill summary"<<endl;
-    cout<<"                           "<<"___________________"<<endl<<endl;
+    cout<<"                                                "<<"Bill summary"<<endl;
+    cout<<"                                            "<<"___________________"<<endl<<endl;
     cout<<"table no: "<<table_no<<endl;
-    
+    cout<<"Item code:"<<"      "<<"Item name:"<<"                   "<<"Item Price:"<<"       "<<"Item quantity:"<<"      "<<"Total price:"<<endl;
+
+    //count total price
+    int total_price = 0;
+    for(int i=0;i<item_count;i++){
+        int total = myRes->food_item_prices[foodIitem[i]]*quantity[i];
+        cout<<myRes->food_item_codes[foodIitem[i]]<<"             "<<left<<setw(25)<<myRes->food_item_names[foodIitem[i]]<<"    "<<myRes->food_item_prices[foodIitem[i]]<<"               "<<left<<setw(4)<<quantity[i]<<"                "<<total<<endl;
+        total_price += total;
+    } 
+
+    double tax = (5*total_price)/100;
+    cout<<"Tax"<<"                                                                                "<<fixed<<setprecision(2)<<tax<<endl;
+
+    cout<<"___________________________________________________________________________________________________"<<endl;
+
+    cout<<"Net total"<<"                                                                          "<<total_price+tax<<endl;
+
+    // add total tax on resturent class
+    myRes->total_tax += tax;
+
     
     return 0;
 }
