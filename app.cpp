@@ -7,7 +7,7 @@ public:
     int food_item_codes[12];
     string food_item_names[12];
     int food_item_prices[12];
-    int total_tax;
+    double total_tax;
 
     Restaurant(int food_item_codes[12], string food_item_names[12], int food_item_prices[12]){
         for(int i=0;i<12;i++){
@@ -67,14 +67,14 @@ Restaurant* takeInput(){
     return myRes;
 }
 
-void takeInput(int item_count, int item_code[], int quantity[], Restaurant* myRes){
-     for(int i=0;i<item_count;i++){
+void takeInput(int j,int item_count, int item_code[], int quantity[], Restaurant* myRes){
+     for(int i=j;i<item_count;i++){
         cout<<endl<<"Ente item "<<i+1<<" code: ";
         cin>>item_code[i];
         int chk_error = myRes->check_item(item_code[i]);
         if(!chk_error){
-            cout<<endl<<"item not found, please enter a valid code: ";
-            takeInput(item_count, item_code, quantity, myRes);
+            cout<<endl<<"item not found, please enter a valid code.";
+            takeInput(i,item_count, item_code, quantity, myRes);
             break;
         }
         cout<<endl<<"Ente item "<<i+1<<" quantity: ";
@@ -85,6 +85,8 @@ void takeInput(int item_count, int item_code[], int quantity[], Restaurant* myRe
 
 int main(){
     Restaurant *myRes = takeInput();
+
+Flag:
     myRes->show_item();
 
     //take input from the customer
@@ -95,16 +97,12 @@ int main(){
     cout<<endl<<"Enter number of items: ";
     cin>>item_count;
 
-    int item_code[item_count], quantity[item_count];
-    
-    takeInput(item_count, item_code, quantity, myRes);
+    int item_code[item_count] = {0}, quantity[item_count];
+    int i = 0;
+    takeInput(i,item_count, item_code, quantity, myRes);
 
     int foodIitem[item_count] = {-1};
     myRes->food_item(item_count,item_code,foodIitem);
-
-    // for(int i=0;i<item_count;i++){
-    //     cout<<endl<<"index"<<foodIitem[i];
-    // }
 
     //Bill summary
     cout<<"                                                "<<"Bill summary"<<endl;
@@ -128,8 +126,8 @@ int main(){
     cout<<"Net total"<<"                                                                          "<<total_price+tax<<endl;
 
     // add total tax on resturent class
-    myRes->total_tax += tax;
-
+    myRes->total_tax = tax;
     
+    goto Flag;
     return 0;
 }
