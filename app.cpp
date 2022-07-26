@@ -7,7 +7,7 @@ public:
     int food_item_codes[12];
     string food_item_names[12];
     int food_item_prices[12];
-    double total_tax;
+    int total_tax;
 
     Restaurant(int food_item_codes[12], string food_item_names[12], int food_item_prices[12]){
         for(int i=0;i<12;i++){
@@ -27,7 +27,6 @@ public:
             cout<<food_item_codes[i]<<"             "<<left<<setw(25)<<food_item_names[i]<<"       "<<food_item_prices[i]<<endl;
          } 
     }
-
 
     void food_item(int item_count,int item_code[],int foodItem[]){
         for(int i=0;i<item_count;i++){
@@ -62,7 +61,6 @@ Restaurant* takeInput(){
         cin>>food_item_prices[i];
     } 
     
-    
     Restaurant *myRes = new Restaurant(food_item_codes,food_item_names,food_item_prices); 
     return myRes;
 }
@@ -85,7 +83,6 @@ void takeInput(int j,int item_count, int item_code[], int quantity[], Restaurant
 
 int main(){
     Restaurant *myRes = takeInput();
-
 Flag:
     myRes->show_item();
 
@@ -119,15 +116,15 @@ Flag:
     } 
 
     double tax = (5*total_price)/100;
-    cout<<"Tax"<<"                                                                                "<<fixed<<setprecision(2)<<tax<<endl;
+    cout<<"Tax"<<"                                                                                "<<tax<<endl;
 
     cout<<"___________________________________________________________________________________________________"<<endl;
 
-    cout<<"Net total"<<"                                                                          "<<total_price+tax<<endl;
+    cout<<"Net total"<<"                                                                          "<<total_price+tax<<endl<<endl<<endl;
 
     // add total tax on resturent class
     myRes->total_tax = tax;
-    
+
     goto Flag;
     return 0;
 }
